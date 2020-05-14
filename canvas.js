@@ -1,26 +1,76 @@
-const canvas = document.querySelector("canvas")
-const context = canvas.getContext("2d")
+let canvas = document.querySelector("canvas")
+let context = canvas.getContext("2d")
 canvas.height = 900
 canvas.width = 900
 
-const cellSize = 30
-const rows = canvas.height / cellSize
-const columns = canvas.width / cellSize
-var cell;
+let cellSize = 30
+let rows = canvas.height / cellSize
+let columns = canvas.width / cellSize
 console.log(rows)
 console.log(columns)
+
+let board = [] 
+for (let i = 0; i < rows; i++) {
+    board[i] = new Array(columns);
+}
+
+for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < rows; j++) {
+        board[i][j] = false
+    }
+}
+
+let mouseDown = false
+let playing = false
+
+
+
+
+function start(){
+    playing = true
+
+}
+
+function pause(){
+    playing = false
+}
+
+
+
+window.addEventListener('mousedown',
+    function(event){
+        var rect = canvas.getBoundingClientRect();
+        if(event.clientX < canvas.height && event.clientY < canvas.height){
+            mouseDown = true
+            fillCell(event)
+        }
+    } 
+)
+window.addEventListener('mouseup',
+    function(){
+        mouseDown = false
+    } 
+)
 
 
 window.addEventListener('mousemove',
     function(event){
-        let yPos = Math.floor(event.clientY / cellSize)
-        let xPos = (Math.floor(event.clientX / cellSize))
-        console.log(xPos + "," + yPos)
-        context.beginPath();
-        context.fillRect(cellSize * xPos, cellSize * yPos, cellSize, cellSize);
-        context.stroke();
+        if(mouseDown){
+            fillCell(event)
+        }
     } 
 )
+function fillCell(event){
+    let yPos = Math.floor(event.clientY / cellSize)
+    let xPos = (Math.floor(event.clientX / cellSize))
+    console.log(xPos + "," + yPos)
+    context.beginPath();
+    context.fillRect(cellSize * xPos, cellSize * yPos, cellSize, cellSize);
+    context.stroke();
+
+    board[yPos][xPos] = true
+    console.log(board)
+}
 
 function drawBoard(){
     for(let i =0; i < canvas.height; i = i + cellSize){
@@ -41,7 +91,6 @@ function drawBoard(){
         context.stroke();
         context.fillStyle = "red";
     }
-
 }
 
 function animate(){

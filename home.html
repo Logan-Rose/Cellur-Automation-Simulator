@@ -7,8 +7,10 @@
 <body>
     <canvas></canvas>
     <div class name="control">
+
         <button onclick="start()">Start</button>
-        <button onclick="start()">Stop</button>
+        <button onclick="pause()">Stop</button><br>
+        <span id="speed"></span><input type="range" min="100" max="1000" value="450" id="slider">
     </div>
 </body>
 <script src='canvas.js'></script>

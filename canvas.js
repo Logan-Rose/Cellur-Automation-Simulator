@@ -1,13 +1,14 @@
 let canvas = document.querySelector("canvas")
 let context = canvas.getContext("2d")
-canvas.height = 900
-canvas.width = 900
+canvas.height = 800
+canvas.width = 1600
 
-let cellSize = 30
+let cellSize = 40
 let rows = canvas.height / cellSize
 let columns = canvas.width / cellSize
 console.log(rows)
 console.log(columns)
+let speed = 450
 
 let board = [] 
 for (let i = 0; i < rows; i++) {
@@ -77,15 +78,11 @@ function condition(board, j, i){
     }
     neighbours.filter(isTrue)
     let neighbourCount = neighbours.filter(isTrue).length
-    if(neighbourCount!=0){
-        console.log(i + "," + j + ":" + neighbourCount)
-    }
-
     if(board[j][i] && (neighbourCount ==2 || neighbourCount == 3)){
-        console.log("Alive " + neighbourCount +  true)
+        //console.log("Alive " + neighbourCount +  true)
         return true
     } else if(!board[j][i] && neighbourCount ==3){
-        console.log("Dead " + neighbourCount + true)
+        //console.log("Dead " + neighbourCount + true)
         return true
     }else{
         return false
@@ -95,9 +92,19 @@ function condition(board, j, i){
 function isTrue(x){
     return x
 }
-
+let gameLoop
 function start(){
-    playing = true
+    if(!playing){
+        gameLoop = setInterval(simulate, speed)
+        playing = true
+    }
+}
+function pause(){
+    playing = false
+    clearInterval(gameLoop)
+}
+
+function simulate(){
     context.clearRect(0,0, canvas.width, canvas.height)
     let nextState = []
     for (let i = 0; i < rows; i++) {
@@ -112,8 +119,6 @@ function start(){
         }
     }
     board = nextState
-    console.log("next " + nextState)
-    console.log("board " + nextState)
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < columns; j++) {
             if(board[j][i]){
@@ -122,24 +127,54 @@ function start(){
         }
     }
 
-
-}
-
-function pause(){
-    playing = false
 }
 
 
+let slider = document.getElementById('slider')
+
+slider.addEventListener('mousedown', 
+    function(){
+        mouseDown = true
+        document.getElementById("speed").innerHTML = slider.value
+        speed = slider.value
+    }
+)
+slider.addEventListener('mouseup', 
+    function(){
+        mouseDown = false
+    }
+)
+slider.addEventListener('mousemove', 
+    function(){
+        if(mouseDown === true){
+            document.getElementById("speed").innerHTML = slider.value
+            speed = slider.value
+        }
+    }
+)
 
 window.addEventListener('mousedown',
     function(event){
         var rect = canvas.getBoundingClientRect();
-        if(event.clientX < canvas.height && event.clientY < canvas.height){
+        if(event.clientX < canvas.width && event.clientY < canvas.height){
             mouseDown = true
             let yPos = Math.floor(event.clientY / cellSize)
             let xPos = (Math.floor(event.clientX / cellSize))
-            fillCell(xPos, yPos)
+            board[yPos][xPos] = true
         }
+    } 
+)
+
+window.addEventListener('dblclick',
+    function(event){
+        console.log("fuck")
+        var rect = canvas.getBoundingClientRect();
+        if(event.clientX < canvas.width && event.clientY < canvas.height){
+            let yPos = Math.floor(event.clientY / cellSize)
+            let xPos = (Math.floor(event.clientX / cellSize))
+            board[yPos][xPos] = false
+        }
+        console.log(board)
     } 
 )
 window.addEventListener('mouseup',
@@ -152,29 +187,34 @@ window.addEventListener('mouseup',
 window.addEventListener('mousemove',
     function(event){
         if(mouseDown){
-            let yPos = Math.floor(event.clientY / cellSize)
-            let xPos = (Math.floor(event.clientX / cellSize))
-            fillCell(xPos, yPos)
+            if(event.clientX < canvas.width && event.clientY < canvas.height){
+                let yPos = Math.floor(event.clientY / cellSize)
+                let xPos = (Math.floor(event.clientX / cellSize))
+                board[yPos][xPos] = true
+            }
         }
     } 
 )
 function fillCell(xPos, yPos){
-
-    console.log(xPos + "," + yPos)
     context.beginPath();
     context.fillRect(cellSize * xPos, cellSize * yPos, cellSize, cellSize);
     context.stroke();
-    board[yPos][xPos] = true
-    console.log(board)
 }
 
-function drawBoard(){
+function drawBoard(){  
+    for (let i = 0; i < rows; i++) {
+        for (let j = 0; j < columns; j++) {
+            if(board[i][j]){
+                fillCell(j, i)
+            }
+        }
+    }
     for(let i =0; i < canvas.height; i = i + cellSize){
         context.beginPath();
         context.moveTo(0, i);
         context.lineTo(canvas.width, i);
         context.strokeStyle = "black";
-        context.lineWidth = 1;
+        context.lineWidth = 2;
         context.stroke();
         context.fillStyle = "red";
     }
@@ -183,15 +223,15 @@ function drawBoard(){
         context.moveTo(i, 0);
         context.lineTo(i, canvas.height);
         context.strokeStyle = "black";
-        context.lineWidth = 1;
+        context.lineWidth = 2;
         context.stroke();
         context.fillStyle = "red";
     }
-
 }
 
 function animate(){
     requestAnimationFrame(animate)
+    context.clearRect(0,0,canvas.width,canvas.height)
     drawBoard()
 
 }

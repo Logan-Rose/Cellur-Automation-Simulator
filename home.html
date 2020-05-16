@@ -8,9 +8,12 @@
     <canvas></canvas>
     <div class name="control">
 
-        <button onclick="start()">Start</button>
-        <button onclick="pause()">Stop</button><br>
-        <span id="speed"></span><input type="range" min="100" max="1000" value="450" id="slider">
+        <button onclick="start(500)">Slow</button>
+        <button onclick="start(250)">Medium</button>
+        <button onclick="start(30)">Fast</button>
+        <button onclick="pause()">Stop</button>
+        <button onclick="clearBoard()">Reset</button><br><br>
+        <button onclick="gosperGun()">Make a gosper glider gun</button>
     </div>
 </body>
 <script src='canvas.js'></script>

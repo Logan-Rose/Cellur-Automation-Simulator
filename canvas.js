@@ -1,45 +1,40 @@
-let canvas = document.getElementById("board")
-let page = document.getElementsByTagName("BODY")[0]
-let context = canvas.getContext("2d")
-let cellSize = 22
+let canvas = document.getElementById("board");
+let page = document.getElementsByTagName("BODY")[0];
+let context = canvas.getContext("2d");
+let cellSize = 22;
 
 var computed = getComputedStyle(canvas);
 var w = parseInt(computed.getPropertyValue("width"), 10);
 var h = parseInt(computed.getPropertyValue("height"), 10);
-console.log(w  + "," + h )
-window.onresize = function(){ location.reload(); }
+console.log(w  + "," + h );
+window.onresize = function(){ location.reload(); };
 
 
-canvas.height = h - (h % cellSize)
-canvas.width = w - (w % cellSize)
+canvas.height = h - (h % cellSize);
+canvas.width = w - (w % cellSize);
 
 
-let rows = canvas.height / cellSize
-let columns = canvas.width / cellSize
-console.log(rows)
-console.log(columns)
-let minSpeed = 1000
-let speed = 450
-let mouseDown = false
-
+let rows = canvas.height / cellSize;
+let columns = canvas.width / cellSize;
+let mouseDown = false;
 
 //Initialize a 2 dimensional array for every cell on the board
 let board = []
 for (let i = 0; i < rows; i++) {
     board[i] = new Array(columns);
 }
-clearBoard()
+clearBoard();
 
 //a function that detects if the whole board is off
 function isOff(){
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < columns; j++) {
             if(board[i][j]){
-                return false
+                return false;
             }
         }
     }
-    return true
+    return true;
 }
 
 
@@ -48,50 +43,49 @@ function isOff(){
 function clearBoard(){
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < columns; j++) {
-            board[i][j] = false
+            board[i][j] = false;
         }
     }
 }
 
 //A function to create a gosper glider gun structure
 function gosperGun(){
-    board[5][2] = true
-    board[5][1] = true
-    board[6][1] = true
-    board[6][2] = true
-    board[5][11] = true
-    board[6][11] = true
-    board[7][11] = true
-    board[4][12] = true
-    board[8][12] = true
-    board[3][13] = true
-    board[3][14] = true
-    board[9][13] = true
-    board[9][14] = true
-    board[6][15] = true
-    board[4][16] = true
-    board[8][16] = true
-    board[5][17] = true
-    board[6][17] = true
-    board[7][17] = true
-    board[6][18] = true
-    board[3][21] = true
-    board[4][21] = true
-    board[5][21] = true
-    board[3][22] = true
-    board[4][22] = true
-    board[5][22] = true
-    board[2][23] = true
-    board[6][23] = true
-    board[1][25] = true
-    board[2][25] = true
-    board[6][25] = true
-    board[7][25] = true
-    board[3][35] = true
-    board[4][35] = true
-    board[3][36] = true
-    board[4][36] = true
-   
+    board[5][2] = true;
+    board[5][1] = true;
+    board[6][1] = true;
+    board[6][2] = true;
+    board[5][11] = true;
+    board[6][11] = true;
+    board[7][11] = true;
+    board[4][12] = true;
+    board[8][12] = true;
+    board[3][13] = true;
+    board[3][14] = true;
+    board[9][13] = true;
+    board[9][14] = true;
+    board[6][15] = true;
+    board[4][16] = true;
+    board[8][16] = true;
+    board[5][17] = true;
+    board[6][17] = true;
+    board[7][17] = true;
+    board[6][18] = true;
+    board[3][21] = true;
+    board[4][21] = true;
+    board[5][21] = true;
+    board[3][22] = true;
+    board[4][22] = true;
+    board[5][22] = true;
+    board[2][23] = true;
+    board[6][23] = true;
+    board[1][25] = true;
+    board[2][25] = true;
+    board[6][25] = true;
+    board[7][25] = true;
+    board[3][35] = true;
+    board[4][35] = true;
+    board[3][36] = true;
+    board[4][36] = true;
 }
 
 
@@ -99,69 +93,69 @@ function gosperGun(){
 function condition(board, j, i){
     neighbours = []
     if(j == 0 && i == 0){
-        neighbours.push(board[j][i+1])
-        neighbours.push(board[j+1][i])
-        neighbours.push(board[j+1][i+1])
+        neighbours.push(board[j][i+1]);
+        neighbours.push(board[j+1][i]);
+        neighbours.push(board[j+1][i+1]);
       }else if(j == 0 && i == columns -1){
-        neighbours.push(board[j][i-1])
-        neighbours.push(board[j+1][i])
-        neighbours.push(board[j+1][i-1])
+        neighbours.push(board[j][i-1]);
+        neighbours.push(board[j+1][i]);
+        neighbours.push(board[j+1][i-1]);
       }else if(j == rows -1 && i ==columns-1){
-        neighbours.push(board[j][i-1])
-        neighbours.push(board[j-1][i])
-        neighbours.push(board[j-1][i-1])
+        neighbours.push(board[j][i-1]);
+        neighbours.push(board[j-1][i]);
+        neighbours.push(board[j-1][i-1]);
       }else if(j == rows -1 && i == 0){
-        neighbours.push(board[j][i+1])
-        neighbours.push(board[j-1][i])
-        neighbours.push(board[j-1][i+1])
+        neighbours.push(board[j][i+1]);
+        neighbours.push(board[j-1][i]);
+        neighbours.push(board[j-1][i+1]);
       }else if(j==0){
-        neighbours.push(board[j][i-1])
-        neighbours.push(board[j+1][i-1])
-        neighbours.push(board[j+1][i])
-        neighbours.push(board[j+1][i+1])
-        neighbours.push(board[j][i+1])
+        neighbours.push(board[j][i-1]);
+        neighbours.push(board[j+1][i-1]);
+        neighbours.push(board[j+1][i]);
+        neighbours.push(board[j+1][i+1]);
+        neighbours.push(board[j][i+1]);
       }else if(j==rows-1){
-        neighbours.push(board[j][i-1])
-        neighbours.push(board[j-1][i-1])
-        neighbours.push(board[j-1][i])
-        neighbours.push(board[j-1][i+1])
-        neighbours.push(board[j][i+1])
+        neighbours.push(board[j][i-1]);
+        neighbours.push(board[j-1][i-1]);
+        neighbours.push(board[j-1][i]);
+        neighbours.push(board[j-1][i+1]);
+        neighbours.push(board[j][i+1]);
       }else if(i==0){
-        neighbours.push(board[j-1][i])
-        neighbours.push(board[j+1][i])
-        neighbours.push(board[j][i+1])
-        neighbours.push(board[j+1][i+1])
-        neighbours.push(board[j-1][i+1])
+        neighbours.push(board[j-1][i]);
+        neighbours.push(board[j+1][i]);
+        neighbours.push(board[j][i+1]);
+        neighbours.push(board[j+1][i+1]);
+        neighbours.push(board[j-1][i+1]);
       }else if(i==columns-1){
-        neighbours.push(board[j-1][i])
-        neighbours.push(board[j+1][i])
-        neighbours.push(board[j-1][i-1])
-        neighbours.push(board[j][i-1])
-        neighbours.push(board[j+1][i-1])
+        neighbours.push(board[j-1][i]);
+        neighbours.push(board[j+1][i]);
+        neighbours.push(board[j-1][i-1]);
+        neighbours.push(board[j][i-1]);
+        neighbours.push(board[j+1][i-1]);
       }else{
-        neighbours.push(board[j][i+1])
-        neighbours.push(board[j][i-1])
-        neighbours.push(board[j+1][i])
-        neighbours.push(board[j+1][i+1])
-        neighbours.push(board[j+1][i-1])
-        neighbours.push(board[j-1][i])
-        neighbours.push(board[j-1][i+1])
-        neighbours.push(board[j-1][i-1])
+        neighbours.push(board[j][i+1]);
+        neighbours.push(board[j][i-1]);
+        neighbours.push(board[j+1][i]);
+        neighbours.push(board[j+1][i+1]);
+        neighbours.push(board[j+1][i-1]);
+        neighbours.push(board[j-1][i]);
+        neighbours.push(board[j-1][i+1]);
+        neighbours.push(board[j-1][i-1]);
     }
-    return neighbours
+    return neighbours;
 }
 
 function conway(cell, neighbours){
-    neighbours.filter(isTrue)
-    let neighbourCount = neighbours.filter(isTrue).length
+    neighbours.filter(isTrue);
+    let neighbourCount = neighbours.filter(isTrue).length;
     if(cell && (neighbourCount ==2 || neighbourCount == 3)){
         //console.log("Alive " + neighbourCount +  true)
-        return true
+        return true;
     } else if(!cell && neighbourCount ==3){
         //console.log("Dead " + neighbourCount + true)
-        return true
+        return true;
     }else{
-        return false
+        return false;
     }
 }
 
@@ -170,11 +164,11 @@ function rose(cell, neighbours){
     let neighbourCount = neighbours.filter(isTrue).length
     if(cell && (neighbourCount % 2 ==0)){
         //console.log("Alive " + neighbourCount +  true)
-        return true
+        return true;
     } else if(!cell && (neighbourCount % 2 == 1)){
-        return true
+        return true;
     }else{
-        return false
+        return false;
     }
 }
 
@@ -182,70 +176,70 @@ function rose(cell, neighbours){
 
 algorithms = [conway, rose]
 function isTrue(x){
-    return x
+    return x;
 }
 
 let playing = false
-let gameLoop
+let gameLoop;
 let gameSpeed = -1
 function setSpeed(speed){
     if(speed ==30){
-        document.getElementById("fast").style.background = "#50BFE6"
-        document.getElementById("medium").style.background = "white"
-        document.getElementById("slow").style.background = "white"
+        document.getElementById("fast").style.background = "#50BFE6";
+        document.getElementById("medium").style.background = "white";
+        document.getElementById("slow").style.background = "white";
     }else if(speed == 250){
-        document.getElementById("fast").style.background = "white"
-        document.getElementById("medium").style.background = "#50BFE6"
-        document.getElementById("slow").style.background = "white"
+        document.getElementById("fast").style.background = "white";
+        document.getElementById("medium").style.background = "#50BFE6";
+        document.getElementById("slow").style.background = "white";
     } else if(speed == 500){
-        document.getElementById("fast").style.background = "white"
-        document.getElementById("medium").style.background = "white"
-        document.getElementById("slow").style.background = "#50BFE6"
+        document.getElementById("fast").style.background = "white";
+        document.getElementById("medium").style.background = "white";
+        document.getElementById("slow").style.background = "#50BFE6";
     }
     if(playing){
         clearInterval(gameLoop)
-        gameSpeed = speed
-        play()
+        gameSpeed = speed;
+        play();
     } else{
-        gameSpeed = speed
+        gameSpeed = speed;
     }
     
 }
 
 function play(){
     if(gameSpeed == -1){
-        alert("You must pick a speed before playing")
+        alert("You must pick a speed before playing");
     }else{
-        playing = true
-        clearInterval(gameLoop)
-        gameLoop = setInterval(simulate, gameSpeed)
+        playing = true;
+        clearInterval(gameLoop);
+        gameLoop = setInterval(simulate, gameSpeed);
     }
 
 }
 function pause(){
-    clearInterval(gameLoop)
+    clearInterval(gameLoop);
 }
 
 function simulate(){
-    context.clearRect(0,0, canvas.width, canvas.height)
-    let nextState = []
+    context.clearRect(0,0, canvas.width, canvas.height);
+    let nextState = [];
     for (let i = 0; i < rows; i++) {
-        row = []
+        row = [];
         for (let j = 0; j < columns; j++) {
-            let neighbours = condition(board,i,j)
+            let neighbours = condition(board,i,j);
             if(algorithms[0](board[i][j], neighbours)){
-                row[j] = true
+                row[j] = true;
             } else{
-                row[j] = false
+                row[j] = false;
             }
-            nextState[i] = row
+            nextState[i] = row;
         }
     }
-    board = nextState
+    board = nextState;
     for (let i = 0; i < rows; i++) {
         for (let j = 0; j < columns; j++) {
             if(board[j][i]){
-                fillCell(i,j)
+                fillCell(i,j);
             }
         }
     }
@@ -256,14 +250,14 @@ function simulate(){
 window.addEventListener('mousedown',
     function(event){
         var rect = canvas.getBoundingClientRect();
-        let mouseX = event.clientX - rect.left
-        let mouseY = event.clientY - rect.top
+        let mouseX = event.clientX - rect.left;
+        let mouseY = event.clientY - rect.top;
         
         if(mouseX < canvas.width && mouseY < canvas.height){
-            mouseDown = true
-            let yPos = Math.floor(mouseY / cellSize)
-            let xPos = Math.floor(mouseX / cellSize)
-            board[yPos][xPos] = true
+            mouseDown = true;
+            let yPos = Math.floor(mouseY / cellSize);
+            let xPos = Math.floor(mouseX / cellSize);
+            board[yPos][xPos] = true;
         }
     } 
 )
@@ -271,20 +265,20 @@ window.addEventListener('mousedown',
 window.addEventListener('dblclick',
     function(event){
         var rect = canvas.getBoundingClientRect();
-        let mouseX = event.clientX - rect.left
-        let mouseY = event.clientY - rect.top
+        let mouseX = event.clientX - rect.left;
+        let mouseY = event.clientY - rect.top;
         
         if(mouseX < canvas.width && mouseY < canvas.height){
-            mouseDown = true
-            let yPos = Math.floor(mouseY / cellSize)
-            let xPos = Math.floor(mouseX / cellSize)
-            board[yPos][xPos] = false
+            mouseDown = true;
+            let yPos = Math.floor(mouseY / cellSize);
+            let xPos = Math.floor(mouseX / cellSize);
+            board[yPos][xPos] = false;
         }
     } 
 )
 window.addEventListener('mouseup',
     function(){
-        mouseDown = false
+        mouseDown = false;
     } 
 )
 
@@ -293,14 +287,14 @@ window.addEventListener('mousemove',
     function(event){
         if(mouseDown){
             var rect = canvas.getBoundingClientRect();
-            let mouseX = event.clientX - rect.left
-            let mouseY = event.clientY - rect.top
+            let mouseX = event.clientX - rect.left;
+            let mouseY = event.clientY - rect.top;
             
             if(mouseX < canvas.width && mouseY < canvas.height){
-                mouseDown = true
-                let yPos = Math.floor(mouseY / cellSize)
-                let xPos = Math.floor(mouseX / cellSize)
-                board[yPos][xPos] = true
+                mouseDown = true;
+                let yPos = Math.floor(mouseY / cellSize);
+                let xPos = Math.floor(mouseX / cellSize);
+                board[yPos][xPos] = true;
             }
         }
     } 
@@ -319,7 +313,7 @@ function drawBoard(){
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < columns; j++) {
                 if(board[i][j]){
-                    fillCell(j, i)
+                    fillCell(j, i);
                 }
             }
         }
@@ -346,11 +340,11 @@ function drawBoard(){
 }
 
 function animate(){
-    requestAnimationFrame(animate)
-    context.clearRect(0,0,canvas.width,canvas.height)
-    drawBoard()
+    requestAnimationFrame(animate);
+    context.clearRect(0,0,canvas.width,canvas.height);
+    drawBoard();
 
 }
 
 
-animate()
+animate();
